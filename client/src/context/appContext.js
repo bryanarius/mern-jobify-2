@@ -75,18 +75,29 @@ const removeUserToLocalStorage =()  =>{
     }
     clearAlert()
     }
+    const toggleSidebar = () =>{
+        dispatch({ type: TOGGLE_SIDEBAR })
+    }
 
     const logoutUser = () => {
         dispatch({ type: LOGOUT_USER})
         removeUserToLocalStorage()
     }
 
-    const toggleSidebar = () =>{
-        dispatch({ type: TOGGLE_SIDEBAR })
+    const updateUser = async (currentUser) => {
+        console.log(currentUser)
     }
+
     return (
         <AppContext.Provider 
-        value={{...state, displayAlert, setupUser, toggleSidebar, logoutUser}}>
+        value={{
+            ...state, 
+            displayAlert,
+            setupUser,
+            toggleSidebar,
+            logoutUser,
+            updateUser
+            }}>
             {children}
         </AppContext.Provider>
         )
