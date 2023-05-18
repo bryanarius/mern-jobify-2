@@ -87,7 +87,7 @@ authFetch.interceptors.request.use(
     (error) => {
       console.log(error.response);
       if (error.response.status === 401) {
-        logoutUser()
+        // logoutUser()
       }
       return Promise.reject(error);
     }
