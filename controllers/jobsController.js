@@ -6,6 +6,7 @@ import {
     UnAuthenticatedError} from '../errors/index.js'
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose'
+import moment from 'moment'
 
 const createJob = async (req, res) => {
     const { position, company } = req.body;
@@ -22,6 +23,7 @@ const createJob = async (req, res) => {
 const getAllJobs = async(req, res) => {
     const jobs = await Job.find({createdBy:req.user.userId})
     res.status(StatusCodes.OK).json({ jobs, totalJobs:jobs.length, numOfPages:1})
+    console.log(mongoose.Types.ObjectId(req.user.userId))
 } 
 const updateJob = async(req, res) => {
     const {id:jobId} = req.params
@@ -82,11 +84,22 @@ const showStats = async(req, res) => {
     declined: stats.declined || 0,
   }
 
-  let monthlyApplications = []
+  let monthlyApplications = await Job.aggregate([
+    {$match:{createdBy:mongoose.Types.ObjectId(req.user.userId)}},
+
+    { 
+      $group: {
+         _id: { year: { $year: '$createdAt'}, month:  { $month: '$createdAt'} },
+         count: { $sum: 1 },
+        },
+      },
+      {$sort:{'_id.year':-1, '_id.month': -1} },
+      {$limit: 6 },
+  ])
 
     res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications })
 
 } 
 
 
-export { createJob, deleteJob, getAllJobs, updateJob, showStats}
+export { createJob, deleteJob, getAllJobs, updateJob, showStats }
