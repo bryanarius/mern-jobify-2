@@ -266,7 +266,6 @@ const removeUserToLocalStorage =()  =>{
         dispatch({ type:SHOW_STATS_BEGIN })
         try {
             const {data} = await authFetch('/jobs/stats')
-            console.log(data)
             dispatch({
                 type: SHOW_STATS_SUCCESS,
                 payload: {
@@ -280,7 +279,7 @@ const removeUserToLocalStorage =()  =>{
         }
         clearAlert()
     }
-    
+
     return (
         <AppContext.Provider 
         value={{
