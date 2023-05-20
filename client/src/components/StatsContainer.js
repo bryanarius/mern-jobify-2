@@ -9,7 +9,7 @@ const StatsContainer = () => {
     const defaultStats = [
         {
         title: 'pending applications',
-        count: stats.pending || 0,
+        count: stats.pending || 1,
         icon: <FaSuitcaseRolling />,
         color: '#e9b949',
         bcg: '#fcefc7',

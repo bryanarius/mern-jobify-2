@@ -235,8 +235,8 @@ const reducer = (state,action) => {
     if(action.type === SHOW_STATS_SUCCESS) {
         return { 
             ...state,
-             isLoading: false,
-             showAlert:true,
+            isLoading: false,
+            showAlert:true,
             stats: action.payload.stats,
             monthlyApplications: action.payload.monthlyApplications,
             }

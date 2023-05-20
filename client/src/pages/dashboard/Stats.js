@@ -10,7 +10,7 @@ const Stats = () => {
   } = useAppContext()
 
     useEffect(() => {
-
+      showStats()
     }, [])
 
     if (isLoading) {
