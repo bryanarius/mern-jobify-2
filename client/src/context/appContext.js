@@ -26,7 +26,8 @@ import {
     EDIT_JOB_SUCCESS,
     EDIT_JOB_ERROR,
     SHOW_STATS_BEGIN,
-    SHOW_STATS_SUCCESS
+    SHOW_STATS_SUCCESS,
+    CLEAR_FILTERS
 
 } from './actions'
 
@@ -57,7 +58,12 @@ const initialState = {
     numOfPages: 1,
     page: 1,
     stats: [],
-    monthlyApplications: []
+    monthlyApplications: [],
+    search: '',
+    searchStatus: 'all',
+    searchType: 'all',
+    sort:'latest',
+    sortOptions:['latest','oldest','a-z','z-a']
 }
 
 const AppContext = React.createContext()
@@ -202,26 +208,29 @@ const removeUserToLocalStorage =()  =>{
     }
 
     const getJobs = async () => {
-        let url = '/jobs'
-
-        dispatch({type:GET_JOBS_BEGIN})
-        try {
-            const {data} = await authFetch(url)
-            const { jobs, totalJobs, numOfPages} = data
-            dispatch({
-                type: GET_JOBS_SUCCESS,
-                payload: {
-                    jobs,
-                    totalJobs,
-                    numOfPages
-                },
-            })
-        } catch (error) {
-            console.log(error.response)
-            // logoutUser()
+        // will add page later
+        const { search, searchStatus, searchType, sort } = state;
+        let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`;
+        if (search) {
+          url = url + `&search=${search}`;
         }
-        clearAlert()
-    }
+        dispatch({ type: GET_JOBS_BEGIN });
+        try {
+          const { data } = await authFetch(url);
+          const { jobs, totalJobs, numOfPages } = data;
+          dispatch({
+            type: GET_JOBS_SUCCESS,
+            payload: {
+              jobs,
+              totalJobs,
+              numOfPages,
+            },
+          });
+        } catch (error) {
+          // logoutUser()
+        }
+        clearAlert();
+      };
 
     const setEditJob = (id) => {
         dispatch({type:SET_EDIT_JOB, payload:{ id } });
@@ -280,6 +289,10 @@ const removeUserToLocalStorage =()  =>{
         clearAlert()
     }
 
+    const clearFilters = () => {
+        dispatch({ type: CLEAR_FILTERS})
+    }
+
     return (
         <AppContext.Provider 
         value={{
@@ -296,7 +309,8 @@ const removeUserToLocalStorage =()  =>{
             setEditJob,
             deleteJob,
             editJob,
-            showStats
+            showStats,
+            clearFilters
             }}>
             {children}
         </AppContext.Provider>
