@@ -20,11 +20,47 @@ const createJob = async (req, res) => {
     const job = await Job.create(req.body);
     res.status(StatusCodes.CREATED).json({ job });
   };
+
 const getAllJobs = async(req, res) => {
-    const jobs = await Job.find({createdBy:req.user.userId})
-    res.status(StatusCodes.OK).json({ jobs, totalJobs:jobs.length, numOfPages:1})
-    console.log(mongoose.Types.ObjectId(req.user.userId))
+    const { status,jobType,sort,search } = req.query
+
+    const queryObject = {
+      createdBy:req.user.userId,
+    }
+
+    if(status !== 'all'){
+      queryObject.status = status
+    }
+
+    if(jobType !== 'all'){
+      queryObject.jobType = jobType
+    }
+
+    if (search){
+      queryObject.position = { $regex: search, $options: 'i'}
+    }
+
+    let result =  Job.find(queryObject)
+
+    if (sort === 'latest') {
+      result = result.sort('-createdAt');
+    }
+    if (sort === 'oldest') {
+      result = result.sort('createdAt');
+    }
+    if (sort === 'a-z') {
+      result = result.sort('position');
+    }
+    if (sort === 'z-a') {
+      result = result.sort('-position');
+    }  
+
+   const jobs = await result 
+
+    res.status(StatusCodes.OK)
+    .json({ jobs, totalJobs:jobs.length, numOfPages:1})
 } 
+
 const updateJob = async(req, res) => {
     const {id:jobId} = req.params
     const { company, position} = req.body
