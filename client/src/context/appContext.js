@@ -228,7 +228,7 @@ const removeUserToLocalStorage =()  =>{
             },
           });
         } catch (error) {
-          // logoutUser()
+          logoutUser()
         }
         clearAlert();
       };
@@ -267,29 +267,26 @@ const removeUserToLocalStorage =()  =>{
             await authFetch.delete(`/jobs/${jobId}`)
             getJobs()
         } catch (error){
-            console.log(error.response)
-            // logoutUser()
+            logoutUser()
         }
     }
 
     const showStats = async () => {
-        dispatch({ type:SHOW_STATS_BEGIN })
+        dispatch({ type: SHOW_STATS_BEGIN });
         try {
-            const {data} = await authFetch('/jobs/stats')
-            dispatch({
-                type: SHOW_STATS_SUCCESS,
-                payload: {
-                    stats:data.defaultStats,
-                    monthlyApplications: data.monthlyApplications
-                },
-            })
+          const { data } = await authFetch('/jobs/stats');
+          dispatch({
+            type: SHOW_STATS_SUCCESS,
+            payload: {
+              stats: data.defaultStats,
+              monthlyApplications: data.monthlyApplications,
+            },
+          });
         } catch (error) {
-            console.log(error)
-            // logoutUser()
+        //   logoutUser();
         }
-        clearAlert()
-    }
-
+        clearAlert();
+      };
     const clearFilters = () => {
         dispatch({ type: CLEAR_FILTERS})
     }
