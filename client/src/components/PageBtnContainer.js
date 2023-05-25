@@ -9,7 +9,6 @@ const PageButtonContainer = () => {
     return index + 1
   })
 
-  console.log(pages)
 
   const prevPage = () => {
     let newPage = page -1
